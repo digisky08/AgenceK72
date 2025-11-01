@@ -18,6 +18,18 @@ const NavContext = ({ children }) => {
             setNavColor('white')
         }
     },[locate])
+
+    // Prevent body scroll when navbar is open
+    useEffect(function(){
+        if(navOpen){
+            document.body.style.overflow = 'hidden'
+        }else{
+            document.body.style.overflow = 'unset'
+        }
+        return () => {
+            document.body.style.overflow = 'unset'
+        }
+    },[navOpen])
     
 
     return (

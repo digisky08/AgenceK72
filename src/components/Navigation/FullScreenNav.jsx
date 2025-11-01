@@ -1,19 +1,33 @@
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { NavbarContext } from '../../context/NavContext'
 
 const FullScreenNav = () => {
     const fullNavLinksRef = useRef(null)
     const fullScreenRef = useRef(null)
+    const navigate = useNavigate()
 
     const [navOpen, setNavOpen] = useContext(NavbarContext)
+
+    const handleNavClick = (path) => {
+        setNavOpen(false)
+        setTimeout(() => {
+            navigate(path)
+        }, 500)
+    }
 
 
 
 
 
     function gsapAnimation() {
+        // Set initial states
+        gsap.set('.link', { opacity: 0, rotateX: 90 })
+        gsap.set('.navlink', { opacity: 0 })
+        gsap.set('.stairing', { height: 0 })
+        
         const tl = gsap.timeline()
         tl.to('.fullscreennav', {
             display: 'block'
@@ -25,15 +39,17 @@ const FullScreenNav = () => {
                 amount: -0.3
             }
         })
+        tl.to('.navlink', {
+            opacity: 1,
+            duration: 0.3
+        })
         tl.to('.link', {
             opacity: 1,
             rotateX: 0,
             stagger: {
                 amount: 0.3
-            }
-        })
-        tl.to('.navlink', {
-            opacity: 1
+            },
+            duration: 0.8
         })
     }
     function gsapAnimationReverse() {
@@ -60,20 +76,24 @@ const FullScreenNav = () => {
     }
 
 
+    // Set initial states on mount
+    useEffect(() => {
+        gsap.set('.link', { opacity: 0, rotateX: 90 })
+        gsap.set('.navlink', { opacity: 0 })
+        gsap.set('.stairing', { height: 0 })
+    }, [])
+
     useGSAP(function () {
         if (navOpen) {
-
             gsapAnimation()
         } else {
-
             gsapAnimationReverse()
-
         }
     }, [navOpen])
 
     return (
-        <div ref={fullScreenRef} id='fullscreennav' className='fullscreennav hidden text-white overflow-hidden h-screen w-full z-50 absolute'>
-            <div className='h-screen w-full fixed'>
+        <div ref={fullScreenRef} id='fullscreennav' className='fullscreennav hidden text-white overflow-hidden h-screen w-full z-50 fixed top-0 left-0'>
+            <div className='h-screen w-full absolute'>
                 <div className='h-full w-full flex'>
                     <div className='stairing h-full w-1/5 bg-black'></div>
                     <div className='stairing h-full w-1/5 bg-black'></div>
@@ -82,8 +102,8 @@ const FullScreenNav = () => {
                     <div className='stairing h-full w-1/5 bg-black'></div>
                 </div>
             </div>
-            <div ref={fullNavLinksRef} className='relative'>
-                <div className="navlink flex w-full justify-between lg:p-5 p-2 items-start">
+            <div ref={fullNavLinksRef} className='relative z-10 h-full w-full'>
+                <div className="navlink flex w-full justify-between lg:p-5 p-2 items-start opacity-0">
                     <div className=''>
                         <div className='lg:w-36 w-24'>
                             <svg className=' w-full' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 103 44">
@@ -100,8 +120,12 @@ const FullScreenNav = () => {
                     </div>
                 </div>
                 <div className=' py-36'>
-                    <div className='link origin-top relative border-t-1 border-white'>
-                        <h1 className='font-[font2] text-5xl lg:text-[8vw] text-center lg:leading-[0.8] lg:pt-10 pt-3 uppercase'>Projets</h1>
+                    <div 
+                        key="projets-link" 
+                        className='link origin-top relative border-t-1 border-white overflow-hidden cursor-pointer opacity-0'
+                        onClick={() => handleNavClick('/projects')}
+                    >
+                        <h1 key="projets-title" className='font-[font2] text-5xl lg:text-[8vw] text-center lg:leading-[0.8] lg:pt-10 pt-3 uppercase'>Projets</h1>
                         <div className='moveLink absolute text-black flex top-0 bg-[#D3FD50]'>
                             <div className='moveX flex items-center'>
                                 <h2 className='whitespace-nowrap font-[font2] lg:text-[8vw] text-5xl  text-center lg:leading-[0.8] lg:pt-10 pt-4 uppercase'>Pour Tout voir</h2>
@@ -118,7 +142,10 @@ const FullScreenNav = () => {
                         </div>
 
                     </div>
-                    <div className='link origin-top relative border-t-1 border-white'>
+                    <div 
+                        className='link origin-top relative border-t-1 border-white cursor-pointer opacity-0'
+                        onClick={() => handleNavClick('/agence')}
+                    >
                         <h1 className='font-[font2] text-5xl lg:text-[8vw] text-center lg:leading-[0.8] lg:pt-10 pt-3 uppercase'>Agence</h1>
                         <div className='moveLink absolute text-black flex top-0 bg-[#D3FD50]'>
                             <div className='moveX flex items-center'>
@@ -136,7 +163,10 @@ const FullScreenNav = () => {
                         </div>
 
                     </div>
-                    <div className='link origin-top relative border-t-1 border-white'>
+                    <div 
+                        className='link origin-top relative border-t-1 border-white cursor-pointer opacity-0'
+                        onClick={() => handleNavClick('/contact')}
+                    >
                         <h1 className='font-[font2] text-5xl lg:text-[8vw] text-center lg:leading-[0.8] lg:pt-10 pt-3 uppercase'>Contact</h1>
                         <div className='moveLink absolute text-black flex top-0 bg-[#D3FD50]'>
                             <div className='moveX flex items-center'>
@@ -154,7 +184,7 @@ const FullScreenNav = () => {
                         </div>
 
                     </div>
-                    <div className='link origin-top relative border-y-1 border-white'>
+                    <div className='link origin-top relative border-y-1 border-white opacity-0'>
                         <h1 className='font-[font2] text-5xl lg:text-[8vw] text-center lg:leading-[0.8] lg:pt-10 pt-3 uppercase'>Blogs</h1>
                         <div className='moveLink absolute text-black flex top-0 bg-[#D3FD50]'>
                             <div className='moveX flex items-center'>
